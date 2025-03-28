@@ -1,0 +1,35 @@
+const Article = require("./articles.schema");
+
+async function createArticle(data) {
+  try {
+    const now = new Date();
+    data.createdAt = now;
+    const article = await Article.create(data);
+    return article;
+  } catch (error) {
+    console.error("❌ Erreur lors de la création de l'article:", error);
+    throw error;
+  }
+}
+
+async function updateArticle(articleId, data) {
+  return await Article.findByIdAndUpdate(articleId, data, { new: true });
+}
+
+async function deleteArticle(articleId) {
+  return await Article.findByIdAndDelete(articleId);
+}
+
+async function getArticlesByUser(userId) {
+  return await Article.find({ user: userId }).populate({
+    path: "user",
+    select: "-password",
+  });
+}
+
+module.exports = {
+  createArticle,
+  updateArticle,
+  deleteArticle,
+  getArticlesByUser,
+};
